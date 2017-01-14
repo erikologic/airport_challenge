@@ -1,11 +1,11 @@
-### https://www.youtube.com/watch?v=Vg0cFVLH_EM&85m00s
+### https://www.youtube.com/watch?v=Vg0cFVLH_EM&96m00s
 
 require 'weather_reporter'
 require 'airport'
 require 'plane'
 
 describe 'User Stories' do
-  let(:airport) { Airport.new(20, weather_reporter) }
+  let(:airport) { Airport.new(weather_reporter, 20) }
   let(:plane) { Plane.new }
   let(:weather_reporter) { WeatherReporter.new }
 
@@ -30,7 +30,7 @@ describe 'User Stories' do
 
     # I want planes to take off from the the airport they are at
     it 'take off planes only from the airport they are at' do
-        airport_2 = Airport.new(20, WeatherReporter.new)
+        airport_2 = Airport.new(WeatherReporter.new, 20)
         airport_2.land(plane)
         expect{ airport.take_off(plane) }.to raise_error('Cannot take off plane: the plane is not at this airport')
     end
@@ -63,5 +63,12 @@ describe 'User Stories' do
       allow(airport).to receive(:stormy?).and_return true
       expect{ airport.take_off(plane) }.to raise_error('Cannot take off: weather is stormy')
     end
+  end
+
+  it 'airports has a default capacity' do
+      allow(weather_reporter).to receive(:stormy?).and_return false
+      defeaults_airport = Airport.new(weather_reporter)
+      Airport::DEFAULT_CAPACITY.times {airport.land(plane)}
+      expect{ airport.land(plane) }.to raise_error('Cannot land plane: airport full')
   end
 end
