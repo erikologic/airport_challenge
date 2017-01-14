@@ -32,6 +32,12 @@ describe Airport do
     it 'instructs a plane to take off' do
       expect(airport).to respond_to(:take_off).with(1).argument
     end
+    it 'raises an error if plane is not at this airport' do
+      allow(weather_reporter).to receive(:stormy?).and_return false
+      airport_2 = Airport.new(20, weather_reporter)
+      airport_2.land(plane)
+      expect{airport.take_off(plane)}.to raise_error('Cannot take off plane: the plane is not at this airport')
+    end
     context 'when stormy' do
       it 'raises an error' do
         allow(weather_reporter).to receive(:stormy?).and_return true
