@@ -48,6 +48,11 @@ describe Airport do
       airport_2.land(plane)
       expect{airport.take_off(plane)}.to raise_error('Cannot take off plane: the plane is not at this airport')
     end
+    it 'returns the plane that took_off' do
+      allow(weather_reporter).to receive(:stormy?).and_return false
+      airport.land(plane)
+      expect(airport.take_off(plane)).to eq plane
+    end
     context 'when stormy' do
       it 'raises an error' do
         allow(weather_reporter).to receive(:stormy?).and_return true

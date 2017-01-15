@@ -35,6 +35,19 @@ describe 'User Stories' do
         expect{ airport.take_off(plane) }.to raise_error('Cannot take off plane: the plane is not at this airport')
     end
 
+    # I want to ensure a plane cannot take off and be in an airport
+    it 'flying planes cannot take off' do
+      airport.land(plane)
+      flying_plane = airport.take_off(plane)
+      expect{ flying_plane.take_off }.to raise_error 'Cannot takeoff: plane already flying'
+    end
+
+    it 'flying planes cannot be at an airport' do
+      airport.land(plane)
+      flying_plane = airport.take_off(plane)
+      expect{ flying_plane.airport }.to raise_error 'Cannot be at an airport: plane already flying'
+    end
+
     context 'when airport is full' do
     # As an air traffic controller
     # To ensure safety
