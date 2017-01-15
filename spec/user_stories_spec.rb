@@ -37,15 +37,24 @@ describe 'User Stories' do
 
     # I want to ensure a plane cannot take off and be in an airport
     it 'flying planes cannot take off' do
-      airport.land(plane)
-      flying_plane = airport.take_off(plane)
-      expect{ flying_plane.take_off }.to raise_error 'Cannot takeoff: plane already flying'
+      expect{ plane.take_off }.to raise_error 'Cannot takeoff: plane already flying'
     end
 
     it 'flying planes cannot be at an airport' do
+      expect{ plane.airport }.to raise_error 'Cannot be at an airport: plane already flying'
+    end
+
+    # I want to be sure the system is consistent
+    # a plane not flying cannot take off and must be in an airport
+    it 'not flying plane cannot land' do
       airport.land(plane)
-      flying_plane = airport.take_off(plane)
-      expect{ flying_plane.airport }.to raise_error 'Cannot be at an airport: plane already flying'
+      expect{ plane.land(airport) }.to raise_error 'Cannot land plane: plane already landed'
+
+    end
+
+    it 'not flying planes must be in an airport' do
+      airport.land(plane)
+      expect(plane.airport).to eq airport
     end
 
     context 'when airport is full' do
@@ -53,7 +62,7 @@ describe 'User Stories' do
     # To ensure safety
     # I want to prevent landing when the airport is full
       it 'does not allow plane to land when airport is full' do
-        20.times{ airport.land(plane) }
+        20.times{ airport.land(Plane.new) }
         expect{ airport.land(plane) }.to raise_error('Cannot land plane: airport full')
       end
     end
@@ -81,7 +90,7 @@ describe 'User Stories' do
   it 'airports has a default capacity' do
       allow(weather_reporter).to receive(:stormy?).and_return false
       defeaults_airport = Airport.new(weather_reporter)
-      Airport::DEFAULT_CAPACITY.times {airport.land(plane)}
+      Airport::DEFAULT_CAPACITY.times {airport.land(Plane.new)}
       expect{ airport.land(plane) }.to raise_error('Cannot land plane: airport full')
   end
 end
