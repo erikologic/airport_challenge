@@ -39,6 +39,7 @@ describe Airport do
       end
     end
   end
+
   describe '#take_off' do
     it 'instructs a plane to take off' do
       airport.land(plane)
@@ -64,5 +65,16 @@ describe Airport do
     end
   end
 
+  describe '#planes' do
+    it 'returns planes that are at the airport' do
+      airport.land(plane)
+      expect(airport.planes).to include plane
+    end
 
+    it 'does not return planes that have taken off' do
+      airport.land(plane)
+      airport.take_off(plane)
+      expect(airport.planes).not_to include plane
+    end
+  end
 end

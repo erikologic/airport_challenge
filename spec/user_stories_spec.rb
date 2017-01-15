@@ -44,6 +44,13 @@ describe 'User Stories' do
       expect{ plane.airport }.to raise_error 'Cannot be at an airport: plane already flying'
     end
 
+    # I want to ensure a plane a plane that has taken off from an airport is no longer in that airport
+    it 'taking off a plane, removes it from that airport' do
+      airport.land(plane)
+      airport.take_off(plane)
+      expect(airport.planes).not_to include plane
+    end
+
     # I want to be sure the system is consistent
     # a plane not flying cannot take off and must be in an airport
     it 'not flying plane cannot land' do
